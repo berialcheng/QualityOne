@@ -18,14 +18,11 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 import com.hp.it.report.service.IReportService;
 
-public class ReportService implements IReportService
-{
+public class ReportService implements IReportService {
 	public String generateViolationChangeReport(Map reportSummary, Map violationSummary, Map violationDetails,
-			Map versionDetails)
-	{
+			Map versionDetails) {
 		StringWriter w = new StringWriter();
-		try
-		{
+		try {
 			Properties p = new Properties();
 			p.setProperty("file.resource.loader.path",
 					"C:\\Workspace\\WorkingCopy\\Quality-one\\quality-one\\report\\src\\main\\resources");
@@ -46,25 +43,20 @@ public class ReportService implements IReportService
 			// System.out.println(w.toString());
 			// fw.write(temp);
 			// fw.close();
-		} catch (ResourceNotFoundException e)
-		{
+		} catch (ResourceNotFoundException e) {
 			e.printStackTrace();
-		} catch (ParseErrorException e)
-		{
+		} catch (ParseErrorException e) {
 			e.printStackTrace();
-		} catch (MethodInvocationException e)
-		{
+		} catch (MethodInvocationException e) {
 			e.printStackTrace();
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return w.toString();
 	}
 
 	public String generateViolationChangeReport(Template template, Map reportSummary, Map violationSummary,
-			Map violationDetails, Map versionDetails)
-	{
+			Map violationDetails, Map versionDetails) {
 		StringWriter w = new StringWriter();
 
 		VelocityContext context = new VelocityContext();
@@ -76,20 +68,15 @@ public class ReportService implements IReportService
 		DateFormat format = DateFormat.getDateTimeInstance(3, 3);
 		context.put("dateFormat", format);
 
-		try
-		{
+		try {
 			template.merge(context, w);
-		} catch (ResourceNotFoundException e)
-		{
+		} catch (ResourceNotFoundException e) {
 			e.printStackTrace();
-		} catch (ParseErrorException e)
-		{
+		} catch (ParseErrorException e) {
 			e.printStackTrace();
-		} catch (MethodInvocationException e)
-		{
+		} catch (MethodInvocationException e) {
 			e.printStackTrace();
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return w.toString();
@@ -97,8 +84,7 @@ public class ReportService implements IReportService
 
 	public String generateAggregateViolationChangeReport(Template template, Map reportSummary,
 			Map<String, Map<String, String>> violationSummary, Map violationDetails, Map versionDetails,
-			Map propertiesContext)
-	{
+			Map propertiesContext) {
 		StringWriter w = new StringWriter();
 
 		VelocityContext context = new VelocityContext();
@@ -111,30 +97,23 @@ public class ReportService implements IReportService
 		context.put("dateFormat", format);
 		context.put("projectContext", propertiesContext);
 
-		try
-		{
+		try {
 			template.merge(context, w);
-		} catch (ResourceNotFoundException e)
-		{
+		} catch (ResourceNotFoundException e) {
 			e.printStackTrace();
-		} catch (ParseErrorException e)
-		{
+		} catch (ParseErrorException e) {
 			e.printStackTrace();
-		} catch (MethodInvocationException e)
-		{
+		} catch (MethodInvocationException e) {
 			e.printStackTrace();
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return w.toString();
 	}
 
-	public static void main(String args[])
-	{
+	public static void main(String args[]) {
 		StringWriter w = new StringWriter();
-		try
-		{
+		try {
 			Properties p = new Properties();
 			p.setProperty("file.resource.loader.path", "C:\\Users\\Berial\\Desktop\\");
 			Velocity.init(p);
@@ -163,23 +142,18 @@ public class ReportService implements IReportService
 			// System.out.println(w.toString());
 			// fw.write(temp);
 			// fw.close();
-		} catch (ResourceNotFoundException e)
-		{
+		} catch (ResourceNotFoundException e) {
 			e.printStackTrace();
-		} catch (ParseErrorException e)
-		{
+		} catch (ParseErrorException e) {
 			e.printStackTrace();
-		} catch (MethodInvocationException e)
-		{
+		} catch (MethodInvocationException e) {
 			e.printStackTrace();
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void storeDocumation(String content)
-	{
-		
+	public void storeDocumation(String content) {
+
 	}
 }

@@ -26,6 +26,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.tmatesoft.svn.core.SVNException;
 
+import com.hp.it.encrypt.EncryptUtil;
 import com.hp.it.mail.bean.EMail;
 import com.hp.it.mail.service.IMailService;
 import com.hp.it.mail.service.impl.MailService;
@@ -45,53 +46,51 @@ import com.hp.it.version.bean.LogEntry;
 import com.hp.it.version.service.IVersionService;
 import com.hp.it.version.service.impl.VersionService;
 
-public class AggregateViolationChangeReportServlet extends AbstractReportServlet
-{
+public class AggregateViolationChangeReportServlet extends AbstractReportServlet {
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-	{
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 		String appContextPath = null;
-		try
-		{
+        String additionalRecipients = null;
+
+		try {
 			appContextPath = "http://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + req.getLocalPort()
 					+ this.getServletContext().getContextPath();
-		} catch (UnknownHostException e)
-		{
+		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
 
 		String aggregateName = req.getParameter("Aggregate");
-		if (aggregateName == null)
-		{
+		if (aggregateName == null) {
 			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		}
 
 		Properties properties = ProjectContext.getProperties(aggregateName);
 
 		int periodNum = Integer.valueOf(properties.getProperty(AggregateReportConstant.DEFAULT_PERIOD));
-		if (req.getParameter("period") != null)
-		{
+		if (req.getParameter("period") != null) {
 			periodNum = Integer.valueOf(req.getParameter("period"));
 		}
 		String violationPriority = properties.getProperty(AggregateReportConstant.DEFAULT_PRIORITY);
-		if (req.getParameter("priority") != null)
-		{
+		if (req.getParameter("priority") != null) {
 			violationPriority = req.getParameter("violationPriority");
 			violationPriority = violationPriority.toUpperCase();
 		}
 
-		AggregateReportTask task = new AggregateReportTask(aggregateName, periodNum, violationPriority, appContextPath);
+        if (req.getParameter("AdditionalRecipients") != null)
+        {
+            additionalRecipients = req.getParameter("AdditionalRecipients");
+        }
+
+		AggregateReportTask task = new AggregateReportTask(aggregateName, periodNum, violationPriority, appContextPath,
+                additionalRecipients);
 		String content = task.generateAndSendEmail();
 		PrintWriter pw = null;
-		try
-		{
+		try {
 			pw = resp.getWriter();
 			pw.print(content);
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
-		} finally
-		{
+		} finally {
 			if (pw != null)
 				pw.close();
 		}
@@ -100,8 +99,7 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 		// threadPool.execute(task);
 	}
 
-	static class AggregateReportTask implements Runnable
-	{
+	static class AggregateReportTask implements Runnable {
 		private String kee;
 
 		private int period;
@@ -116,11 +114,15 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 
 		Map<String, LogEntry> versionDetails;
 
-		public AggregateReportTask(String kee, int period, String violationPriority, String appContextPath)
-		{
+        private String additionalRecipients;
+
+        public AggregateReportTask(String kee, int period, String violationPriority, String appContextPath,
+                String additionalRecipients)
+        {
 			this.kee = kee;
 			this.period = period;
 			this.violationPriority = violationPriority;
+            this.additionalRecipients = additionalRecipients;
 			reportSummary = new HashMap<String, String>();
 			reportSummary.put("violationPeriod", String.valueOf(this.period));
 			reportSummary.put("violationPriority", this.violationPriority);
@@ -128,29 +130,24 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 			reportSummary.put("reportDatetime", new Date().toString());
 			violationSummary = new HashMap<String, Map<String, String>>();
 			violationDetails = new TreeMap<String, Collection<Violation>>(new SeverityComp());
-			if (violationPriority.equalsIgnoreCase("Blocker"))
-			{
+			if (violationPriority.equalsIgnoreCase("Blocker")) {
 				violationDetails.put("Blocker", new ArrayList<Violation>());
-			} else if (violationPriority.equalsIgnoreCase("Critical"))
-			{
+			} else if (violationPriority.equalsIgnoreCase("Critical")) {
 				violationDetails.put("Blocker", new ArrayList<Violation>());
 				violationDetails.put("Critical", new ArrayList<Violation>());
 
-			} else if (violationPriority.equalsIgnoreCase("Major"))
-			{
+			} else if (violationPriority.equalsIgnoreCase("Major")) {
 				violationDetails.put("Blocker", new ArrayList<Violation>());
 				violationDetails.put("Critical", new ArrayList<Violation>());
 				violationDetails.put("Major", new ArrayList<Violation>());
 
-			} else if (violationPriority.equalsIgnoreCase("Minor"))
-			{
+			} else if (violationPriority.equalsIgnoreCase("Minor")) {
 				violationDetails.put("Blocker", new ArrayList<Violation>());
 				violationDetails.put("Critical", new ArrayList<Violation>());
 				violationDetails.put("Major", new ArrayList<Violation>());
 				violationDetails.put("Minor", new ArrayList<Violation>());
 
-			} else if (violationPriority.equalsIgnoreCase("Info"))
-			{
+			} else if (violationPriority.equalsIgnoreCase("Info")) {
 				violationDetails.put("Blocker", new ArrayList<Violation>());
 				violationDetails.put("Critical", new ArrayList<Violation>());
 				violationDetails.put("Major", new ArrayList<Violation>());
@@ -161,55 +158,44 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 			versionDetails = new HashMap<String, LogEntry>();
 		}
 
-		public void run()
-		{
+		public void run() {
 			generateAndSendEmail();
 		}
 
-		public String generateAndSendEmail()
-		{
+		public String generateAndSendEmail() {
 			Properties properties = ProjectContext.getProperties(kee);
-			if (properties == null)
-			{
+			if (properties == null) {
 				// TODO
 				// properties not found
 				return null;
 			}
-			if (period == 0)
-			{
+			if (period == 0) {
 				period = Integer.valueOf(properties.getProperty(AggregateReportConstant.DEFAULT_PERIOD));
 			}
-			if (violationPriority == null || "".equalsIgnoreCase(violationPriority))
-			{
+			if (violationPriority == null || "".equalsIgnoreCase(violationPriority)) {
 				violationPriority = properties.getProperty(AggregateReportConstant.DEFAULT_PRIORITY);
 			}
 			retrieveAggregateViolationData(properties.getProperty(AggregateReportConstant.AGGREGATE_PROJECTS), period,
 					violationPriority);
 
 			VelocityEngine ve = new VelocityEngine();
-			try
-			{
+			try {
 				Properties p = new Properties();
 				p.setProperty("file.resource.loader.path", System.getProperty("user.home") + File.separator
 						+ GobalConstant.HOME_DIR + File.separator + GobalConstant.TEMPLATE_DIR);
 				ve.init(p);
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			Template template = null;
-			try
-			{
+			try {
 				template = ve.getTemplate("aggregateChangeReport.vm");
-			} catch (ResourceNotFoundException e)
-			{
+			} catch (ResourceNotFoundException e) {
 				e.printStackTrace();
-			} catch (ParseErrorException e)
-			{
+			} catch (ParseErrorException e) {
 				e.printStackTrace();
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
@@ -221,38 +207,43 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 			IMailService mailService = new MailService();
 			mailService.setSmtp("smtp3.hp.com");
 			EMail mail = new EMail();
-			mail.setFrom("no-reply@hp.com");
 			Set<String> to = new HashSet<String>();
 			String emailList = properties.getProperty(AggregateReportConstant.DEFAULT_EMAIL_LIST);
+            String emailFrom = properties.getProperty(ArtifactReportConstant.DEFAULT_EMAIL_SENDER);
 
-			for (String email : emailList.split(","))
-			{
+			for (String email : emailList.split(",")) {
 				to.add(email);
 			}
 
 			mail.setDate(reportDate);
 			mail.setSubject(kee + " violation change report " + reportDate);
 			mail.setToList(to);
+            if (emailFrom != null && emailFrom != "")
+            {
+                mail.setFrom(emailFrom);
+            }
+            else
+            {
+                mail.setFrom(GobalConstant.DEFAULT_EMAIL);
+            }
 
-			// Set<String> cc = new HashSet<String>();
-			// if (AdditionalRecipients != null)
-			// {
-			// for (String email : AdditionalRecipients.split(","))
-			// {
-			// to.add(email);
-			// }
-			// mail.setCcList(cc);
-			// }
+            Set<String> cc = new HashSet<String>();
+            if (additionalRecipients != null)
+            {
+                for (String email : additionalRecipients.split(","))
+                {
+                    to.add(email);
+                }
+                mail.setCcList(cc);
+            }
 
 			mail.setContent(content);
-			// mailService.sendMail(mail);
+            mailService.sendMail(mail);
 			return content;
 		}
 
-		private void retrieveAggregateViolationData(String aggregateProjects, int period, String violationPriority)
-		{
-			for (String projectKee : aggregateProjects.split("\\*"))
-			{
+		private void retrieveAggregateViolationData(String aggregateProjects, int period, String violationPriority) {
+			for (String projectKee : aggregateProjects.split("\\*")) {
 				/*
 				 * ViolationSumary retrieve
 				 */
@@ -277,32 +268,38 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 		}
 
 		private Map<String, LogEntry> retrieveVersionDetails(String projectKee,
-				Map<String, Collection<Violation>> artifactViolationDetails)
-		{
+				Map<String, Collection<Violation>> artifactViolationDetails) {
+			EncryptUtil encryptUtil = new EncryptUtil();
 			Properties properties = ProjectContext.getProperties(projectKee);
 			String[] id = projectKee.split(":");
 
 			IVersionService versionService = new VersionService();
 			Map<String, LogEntry> versionDetails = new HashMap<String, LogEntry>();
-			try
-			{
+			try {
 				String privateKeyFilePath = System.getProperty("user.home") + File.separator + GobalConstant.HOME_DIR
 						+ File.separator + GobalConstant.WORKSPACE + File.separator + id[0] + "$" + id[1]
 						+ File.separator + GobalConstant.PRIVATE_KEY;
 
-				versionService.initialize(id[0], id[1], properties.getProperty(ArtifactReportConstant.VER_URL),
+				versionService.initialize(
+						id[0],
+						id[1],
+						properties.getProperty(ArtifactReportConstant.VER_URL),
 						properties.getProperty(ArtifactReportConstant.VER_USER),
-						properties.getProperty(ArtifactReportConstant.VER_PWD),
-						Boolean.valueOf(properties.getProperty(ArtifactReportConstant.VER_PRV)), privateKeyFilePath,
-						properties.getProperty(ArtifactReportConstant.VER_PPWD));
+						properties.getProperty(ArtifactReportConstant.VER_PWD) == null
+								|| properties.getProperty(ArtifactReportConstant.VER_PWD).length() == 0 ? properties
+								.getProperty(ArtifactReportConstant.VER_PWD) : encryptUtil.decrypt(properties
+								.getProperty(ArtifactReportConstant.VER_PWD)),
+						Boolean.valueOf(properties.getProperty(ArtifactReportConstant.VER_PRV)),
+						privateKeyFilePath,
+						properties.getProperty(ArtifactReportConstant.VER_PPWD) == null
+								|| properties.getProperty(ArtifactReportConstant.VER_PWD).length() == 0 ? properties
+								.getProperty(ArtifactReportConstant.VER_PPWD) : encryptUtil.decrypt(properties
+								.getProperty(ArtifactReportConstant.VER_PPWD)));
 
 				Set<String> qNameSet = new HashSet<String>();
-				for (Collection<Violation> eachPriority : artifactViolationDetails.values())
-				{
-					for (Violation eachViolation : eachPriority)
-					{
-						for (Project project : eachViolation.getProjects())
-						{
+				for (Collection<Violation> eachPriority : artifactViolationDetails.values()) {
+					for (Violation eachViolation : eachPriority) {
+						for (Project project : eachViolation.getProjects()) {
 							qNameSet.add(project.getLongName());
 						}
 					}
@@ -310,16 +307,14 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 
 				versionDetails = versionService.findLatestLogEntriesByQualifiedClassNames(qNameSet);
 
-			} catch (SVNException e)
-			{
+			} catch (SVNException e) {
 				e.printStackTrace();
 			}
 			return versionDetails;
 		}
 
 		private Map<String, Map<String, String>> retrieveViolationSummary(String projectKee, int period2,
-				String violationPriority2)
-		{
+				String violationPriority2) {
 			String[] id = projectKee.split(":");
 			Properties properties = ProjectContext.getProperties(projectKee);
 
@@ -334,8 +329,7 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 		}
 
 		private Map<String, Collection<Violation>> retrieveViolationsByPriority(String kee, int period,
-				String violationPriority)
-		{
+				String violationPriority) {
 			Properties properties = ProjectContext.getProperties(kee);
 
 			String[] id = kee.split(":");
@@ -351,14 +345,12 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 		}
 
 		private void mergeVersionDetails(Map<String, LogEntry> aggregateVersionDetails,
-				Map<String, LogEntry> artifactVersionDetails)
-		{
+				Map<String, LogEntry> artifactVersionDetails) {
 			aggregateVersionDetails.putAll(artifactVersionDetails);
 		}
 
 		private void mergeViolationSummary(Map<String, Map<String, String>> aggregateViolationSummay,
-				Map<String, Map<String, String>> artifactViolationSummary)
-		{
+				Map<String, Map<String, String>> artifactViolationSummary) {
 			aggregateViolationSummay.putAll(artifactViolationSummary);
 		}
 
@@ -368,29 +360,21 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 		 * @param eachOne
 		 */
 		private void mergeViolationDetails(Map<String, Collection<Violation>> aggregate,
-				Map<String, Collection<Violation>> eachOne)
-		{
-			for (Entry<String, Collection<Violation>> entry : aggregate.entrySet())
-			{
+				Map<String, Collection<Violation>> eachOne) {
+			for (Entry<String, Collection<Violation>> entry : aggregate.entrySet()) {
 				Collection<Violation> artifactSeverityViolationList = eachOne.get(entry.getKey());
 				Collection<Violation> aggregateSeverityViolationList = entry.getValue();
 
-				if (artifactSeverityViolationList != null && artifactSeverityViolationList.size() != 0)
-				{
-					for (Violation violation : artifactSeverityViolationList)
-					{
-						if (aggregateSeverityViolationList.contains(violation))
-						{
-							for (Violation original : aggregateSeverityViolationList)
-							{
-								if (original.equals(violation))
-								{
+				if (artifactSeverityViolationList != null && artifactSeverityViolationList.size() != 0) {
+					for (Violation violation : artifactSeverityViolationList) {
+						if (aggregateSeverityViolationList.contains(violation)) {
+							for (Violation original : aggregateSeverityViolationList) {
+								if (original.equals(violation)) {
 									original.setDelta(original.getDelta() + violation.getDelta());
 									original.getProjects().addAll(violation.getProjects());
 								}
 							}
-						} else
-						{
+						} else {
 							aggregateSeverityViolationList.add(violation);
 						}
 

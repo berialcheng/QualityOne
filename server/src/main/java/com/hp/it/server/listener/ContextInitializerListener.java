@@ -123,9 +123,9 @@ public class ContextInitializerListener implements ServletContextListener
 		{
 			InputStream is = this.getClass().getClassLoader().getResourceAsStream(filename);
 			FileOutputStream fos = new FileOutputStream(dest+ File.separator +filename);
-			byte[] by = new byte[1024];
 			do
 			{
+				byte[] by = new byte[1024];
 				is.read(by, 0, 1024);
 				fos.write(by);
 			} while (is.available() > 0);

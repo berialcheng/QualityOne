@@ -72,8 +72,22 @@
              #foreach($violationSummary  in $aggregateSummary.entrySet())
              <tr>
 				<td style="background-color:#CCC;">$violationSummary.getKey()</td>
+				#set($tempCt=1)
+				#set($tempSeverity = "")
 				#foreach($violationSeverity in $violationSummary.getValue())
-				<td>$violationSeverity</td>
+				   #if($tempCt == 1)
+				      #set($tempSeverity = "BLOCKER")
+				   #elseif($tempCt == 2)
+				      #set($tempSeverity = "CRITICAL")
+				   #elseif($tempCt == 3)
+				      #set($tempSeverity = "MAJOR")
+				   #elseif($tempCt == 4)
+				      #set($tempSeverity = "MINOR")
+				   #elseif($tempCt == 5)
+				      #set($tempSeverity = "INFO")
+				   #end
+				   <td><a href="$projectContext.get($violationSummary.getKey()).get("PORTAL_URL")/drilldown/violations/$projectContext.get($violationSummary.getKey()).get("KEE")?period=$reportSummary.get("violationPeriod")&priority=$tempSeverity">$violationSeverity</a></td>
+				   #set($tempCt = $tempCt + 1)
 				#end
 			</tr>
 			 #end
@@ -124,9 +138,9 @@
 		
     <table class="box" cellspaceing="0"><caption>$displayCount New $violationEntrySet.getKey() Issues Found</caption>
 	#if($displayCount == 0)
-		       <tr style="background-color:#6699CC;color:#FFFFFF"><td align="left">None new violations</td></tr>
+		       <tr style="background-color:#CCC;font-size:16px;"><td align="left">None new violations</td></tr>
 	#else
-      <tr class="odd"><td>New Violation</td><td>Last modified Ts</td><td>Last Modified Comments</td><td>Ascend </td><td>Owner</td></tr>
+      <tr class="odd"><td>New Violation</td><td>Artifact Name</td><td>Last modified Ts</td><td>Last Modified Comments</td><td>Ascend </td><td>Owner</td></tr>
 	  #set($totalArtifactCount = 0)
       #set($totalProjectCount = 0)
       #foreach($violation in $violationCollection)
@@ -136,8 +150,9 @@
           #set($totalProjectCount = $totalProjectCount + 1)
           #set($sequence = "")
           #set($versionInfo = $versionDetails.get($project.getLongName()))
-		  #set($firstCommaIndex = $project.getKee().indexOf(':') + 1)
-          #set($projectArtifact = $project.getKee().substring(0, $project.getKee().indexOf(':')) + ":"+ $project.getKee().substring($firstCommaIndex).substring(0, $project.getKee().substring($firstCommaIndex).indexOf(':')) )
+          #set($projectArtifact = $project.getKee())
+	  #set($artifactIndex = $projectArtifact.indexOf(':') + 1)
+	  #set($artifactName = $projectArtifact.substring($artifactIndex))
           ## For each one project show the different background color ...
           #if($totalProjectCount % 2 == 0)
              #set($sequence = "odd")
@@ -153,10 +168,11 @@
             #else
               #set($violationIdentifier = $violation.getRule().getName())
             #end
-      <tr style="background-color:#6699CC;color:#FFFFFF"><td colspan="5"><a>$violationIdentifier</a> ($violation.getDelta())</td></tr>
-      <tr class="$sequence"><td><a href=$projectContext.get($projectArtifact).get("PORTAL_URL")/resource/index/$project.getId()?tab=violations&period=$reportSummary.get("violationPeriod")&rule=$violation.getRule().getId()>$project.getName()</a></td><td>$dateFormat.format($versionInfo.getDate())</td><td>$versionInfo.getMessage()</td><td>$project.getViolationDelta()</td><td>$versionInfo.getAuthor()</td></tr>
+      <tr style="background-color:#6699CC;color:#FFFFFF"><td colspan="6">
+	<a style="color:#FFFFFF">$violationIdentifier</a> ($violation.getDelta())</td></tr>
+      <tr class="$sequence"><td><a href=$projectContext.get($projectArtifact).get("PORTAL_URL")/resource/index/$project.getId()?tab=violations&period=$reportSummary.get("violationPeriod")&rule=$violation.getRule().getId()>$project.getName()</a></td><td>$artifactName</td><td>$dateFormat.format($versionInfo.getDate())</td><td>$versionInfo.getMessage()</td><td>$project.getViolationDelta()</td><td>$versionInfo.getAuthor()</td></tr>
           #else
-      <tr class="$sequence"><td><a href=$projectContext.get($projectArtifact).get("PORTAL_URL")/resource/index/$project.getId()?tab=violations&period=$reportSummary.get("violationPeriod")&rule=$violation.getRule().getId()>$project.getName()</a></td><td>$dateFormat.format($versionInfo.getDate())</td><td>$versionInfo.getMessage()</td><td>$project.getViolationDelta()</td><td>$versionInfo.getAuthor()</td></tr>
+      <tr class="$sequence"><td><a href=$projectContext.get($projectArtifact).get("PORTAL_URL")/resource/index/$project.getId()?tab=violations&period=$reportSummary.get("violationPeriod")&rule=$violation.getRule().getId()>$project.getName()</a></td><td>$artifactName</td><td>$dateFormat.format($versionInfo.getDate())</td><td>$versionInfo.getMessage()</td><td>$project.getViolationDelta()</td><td>$versionInfo.getAuthor()</td></tr>
           #end
         #end
       #end
@@ -171,7 +187,6 @@
           <div class="bottom">
             <p>Note: This email is generated automatically. Try to reply this is unserviceable.</p>
             <p>Each violation ascended in this report should be reviewed and fixed in a timely manner. The owner column is picked up as the last person who modified each file, so it may not correct if several person change a same file during the report period. Owner please be responsible to notify the correct person if it's not you first broke the rule.</p>
-            <p>Any question or suggestion, please contact Adrian.</p>
           </div>
         </td>
       </tr>

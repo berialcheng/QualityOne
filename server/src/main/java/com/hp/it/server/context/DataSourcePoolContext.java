@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import com.hp.it.encrypt.EncryptUtil;
 import com.hp.it.resource.ds.DataSourceFactory;
 import com.hp.it.server.configuration.ArtifactReportConstant;
 
@@ -26,7 +27,7 @@ public class DataSourcePoolContext
 		String driverName = properties.getProperty(ArtifactReportConstant.DB_DRIVER);
 		String url = properties.getProperty(ArtifactReportConstant.DB_URL);
 		String userName = properties.getProperty(ArtifactReportConstant.DB_USER);
-		String password = properties.getProperty(ArtifactReportConstant.DB_PWD);
+		String password = new EncryptUtil().decrypt(properties.getProperty(ArtifactReportConstant.DB_PWD));
 
 		PoolIdentifier key = new PoolIdentifier();
 		key.setUrl(url);

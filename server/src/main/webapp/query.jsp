@@ -2,6 +2,7 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.io.*"%>
 <%@ page import="java.net.*"%>
+<%@ page import="com.hp.it.encrypt.*"%>
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -10,6 +11,10 @@
 	$(document).ready(function() {
 		$("div.panel div.title").click(function() {
 			$(this).parent().find("div.content").slideToggle();
+		});
+		$("#copyButton").click(function() {
+			var urlText = $("#url").val();
+			$.copy(urlText);
 		});
 	});
 </script>
@@ -52,7 +57,9 @@
 															try
 															{
 																Properties properties = new Properties();
-																properties.load(new FileInputStream(file));
+																FileInputStream fis = new FileInputStream(file);
+																properties.load(fis);
+																fis.close();
 																String[] kee = properties.getProperty("KEE").split("\\:");
 																groupId = kee[0];
 																artifactId = kee[1];
@@ -88,7 +95,7 @@
 										<tr>
 											<td>Database password</td>
 											<td><input type="password" name="DB_PWD"
-												value="<%=properties.getProperty("DB_PWD")%>" size="48" /></td>
+												value="<%=new EncryptUtil().decrypt(properties.getProperty("DB_PWD")) %>" size="48" /></td>
 										</tr>
 										<tr>
 											<td>SVN url</td>
@@ -103,7 +110,7 @@
 										<tr>
 											<td>SVN password</td>
 											<td><input type="password" name="VER_PWD"
-												value="<%=properties.getProperty("VER_PWD")%>" size="48" /></td>
+												value="<%=new EncryptUtil().decrypt(properties.getProperty("VER_PWD")) %>" size="48" /></td>
 										</tr>
 										<tr>
 											<td>VER_PRV</td>
@@ -226,6 +233,12 @@
 												size="48" /></td>
 										</tr>
 										<tr>
+											<td>Email sender</td>
+											<td><input type="text" name="DEFAULT_EMAIL_SENDER"
+												value="<%=properties.getProperty("DEFAULT_EMAIL_SENDER")%>"
+												size="48" /></td>
+										</tr>
+										<tr>
 											<td align="center" colspan="2"><input type="submit"
 												value="Update" /></td>
 										</tr>
@@ -253,10 +266,10 @@
 							<div class="title">State</div>
 							<div class="content">
 								<ul style="list-style-type: none;">
-									<li><input type="url"
-										value="http://<%=InetAddress.getLocalHost().getCanonicalHostName()%>:<%=request.getLocalPort()%><%=this.getServletContext().getContextPath()%>/SonarViolationChangeReport?groupId=<%=groupId%>&artifactId=<%=artifactId%>"
+									<li><input type="url" id="url"
+										value="<%=InetAddress.getLocalHost().getCanonicalHostName()%>:<%=request.getLocalPort()%><%=this.getServletContext().getContextPath()%>/SonarViolationChangeReport?groupId=<%=groupId%>&artifactId=<%=artifactId%>"
 										size="54"></li>
-									<li><input type="button" value="copy" /></li>
+									<li><input type="button" value="copy the link" id="copyButton"/></li>
 								</ul>
 							</div>
 						</div>
@@ -288,11 +301,18 @@
 										<td>Additional recipients</td>
 									</tr>
 									<tr>
-										<td colspan="2"><input type="submit" value="Request" /></td>
+										<td colspan="2"><input id="request" type="submit" value="Request" /></td>
 									</tr>
 								</table>
 							</div>
 						</div>
+						<script type="text/javascript">
+							$(document).ready(function() {
+									$("#request").click(function(){
+										window.open("<%=InetAddress.getLocalHost().getCanonicalHostName()%>:<%=request.getLocalPort()%><%=this.getServletContext().getContextPath()%>/SonarViolationChangeReport?groupId=<%=groupId%>&artifactId=<%=artifactId%>");
+							})
+						});
+						</script>
 						<div class="panel">
 							<div class="title">Timer Trigger</div>
 							<div class="content"  style="display:none;">

@@ -102,6 +102,13 @@ public class ViolationService implements IViolationService
 		Project project = projectDao.getProject(groupId, artifactId);
 		Collection<Violation> violations = new ArrayList<Violation>();
 		recursive(project, violations, period, violationPriority);
+        for (Violation vio : violations)
+        {
+            for (Project pro : vio.getProjects())
+            {
+                pro.setKee(groupId + ":" + artifactId);
+            }
+        }
 		return violations;
 	}
 
@@ -119,7 +126,7 @@ public class ViolationService implements IViolationService
 			portalDao.retrieveRecentChange(project, violations, period, violationPriority);
 		} else if ("TRK".equalsIgnoreCase(project.getQualifier()))
 		{
-			Collection<Project> childs = projectDao.getProjectsByRootId(project.getId());
+            Collection<Project> childs = projectDao.getProjectsByRootId(project.getId());
 
 			boolean flag = false;
 			for (Project p : childs)

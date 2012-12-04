@@ -96,6 +96,12 @@
 											<td><input type="text" name="DEFAULT_EMAIL(S)" value=""
 												size="48" placeholder="Each address separated by comma" /></td>
 										</tr>
+										<!-- add the email sender -->
+										<tr>
+											<td>Email sender</td>
+											<td><input type="text" name="DEFAULT_EMAIL_SENDER" value=""
+												size="48" placeholder="sonar-violation@hp.com"/></td>
+										</tr>
 										<tr>
 											<td colspan="2" align="center"><input type="submit"
 												value="create" /></td>
@@ -140,6 +146,12 @@
 											<td>Default email recipients</td>
 											<td><input type="text" name="DEFAULT_EMAIL(S)" value=""
 												size="48" placeholder="Each address separated by comma" /></td>
+										</tr>
+										<!-- add the email sender -->
+										<tr>
+											<td>email sender</td>
+											<td><input type="text" name="DEFAULT_EMAIL_SENDER" value=""
+												size="48" placeholder="sonar-violation@hp.com"/></td>
 										</tr>
 										<tr>
 											<td>Aggregate projects</td>

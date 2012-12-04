@@ -29,4 +29,7 @@ public class ArtifactReportConstant
 	public static final String DEFAULT_PERIOD = "DEFAULT_PERIOD";
 
 	public static final String DEFAULT_EMAIL_LIST = "DEFAULT_EMAIL(S)";
+
+    //add the email sender
+    public static final String DEFAULT_EMAIL_SENDER = "DEFAULT_EMAIL_SENDER";
 }

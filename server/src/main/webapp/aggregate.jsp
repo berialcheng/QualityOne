@@ -45,7 +45,9 @@
 														if (file.isFile() && file.getName().equalsIgnoreCase("config.properties")) {
 															try {
 																Properties properties = new Properties();
-																properties.load(new FileInputStream(file));
+																FileInputStream fis = new FileInputStream(file);
+																properties.load(fis);
+																fis.close();
 										%>
 										<tr>
 												<td>Aggregate</td>
@@ -147,6 +149,13 @@
 												value="<%=properties.getProperty(AggregateReportConstant.DEFAULT_EMAIL_LIST)%>"
 												size="48" /></td>
 										</tr>
+										
+										<tr>
+											<td>Email sender</td>
+											<td><input type="text" name="DEFAULT_EMAIL_SENDER"
+												value="<%=properties.getProperty(AggregateReportConstant.DEFAULT_EMAIL_SENDER)%>"
+												size="48" /></td>
+										</tr>
 										<tr>
 											<td>Aggregate projects</td>
 											<td><input type="text" name="<%=AggregateReportConstant.AGGREGATE_PROJECTS %>"
@@ -243,7 +252,10 @@
 						<div class="panel">
 							<div class="title">Delete</div>
 							<div class="content" style="display:none;">
-								<button title="Delete" ></button>
+								<form action="SonarReportConfiguration/D" method="post">
+									<input type="hidden" name="AGGREGATE" value="<%=request.getParameter("Aggregate") %>" /> 
+									<input type="submit" value="Delete" />
+								</form>
 							</div>
 						</div>
 					</td>

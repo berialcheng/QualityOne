@@ -23,6 +23,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.tmatesoft.svn.core.SVNException;
 
+import com.hp.it.encrypt.EncryptUtil;
 import com.hp.it.mail.bean.EMail;
 import com.hp.it.mail.service.IMailService;
 import com.hp.it.mail.service.impl.MailService;
@@ -40,20 +41,16 @@ import com.hp.it.version.bean.LogEntry;
 import com.hp.it.version.service.IVersionService;
 import com.hp.it.version.service.impl.VersionService;
 
-public class SonarViolationChangeReportServlet extends AbstractReportServlet
-{
+public class SonarViolationChangeReportServlet extends AbstractReportServlet {
 
 	private static Logger logger = Logger.getLogger(SonarViolationChangeReportServlet.class);
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-	{
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
 		PrintWriter pw = null;
-		try
-		{
+		try {
 			pw = resp.getWriter();
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -63,30 +60,25 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet
 		String violationPriority = null;
 		String additionalRecipients = null;
 
-		if (req.getParameter("period") != null)
-		{
+		if (req.getParameter("period") != null) {
 			periodNum = Integer.valueOf(req.getParameter("period"));
 		}
 
-		if (req.getParameter("priority") != null)
-		{
+		if (req.getParameter("priority") != null) {
 			violationPriority = req.getParameter("violationPriority");
 			violationPriority = violationPriority.toUpperCase();
 		}
 
-		if (req.getParameter("AdditionalRecipients") != null)
-		{
+		if (req.getParameter("AdditionalRecipients") != null) {
 			additionalRecipients = req.getParameter("AdditionalRecipients");
 		}
 
 		ReportTask task = new ReportTask(groupId, artifactId, periodNum, violationPriority, additionalRecipients);
 
-		if (req.getParameter("async") != null && "true".equalsIgnoreCase(req.getParameter("async")))
-		{
+		if (req.getParameter("async") != null && "true".equalsIgnoreCase(req.getParameter("async"))) {
 			ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.getApplicationContext().getBean("threadPool");
 			threadPool.execute(task);
-		} else
-		{
+		} else {
 			String retval = task.generateAndSendEmail();
 			pw.print(retval);
 		}
@@ -94,8 +86,7 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet
 		pw.close();
 	}
 
-	static class ReportTask implements Runnable
-	{
+	static class ReportTask implements Runnable {
 
 		private String groupId;
 		private String artifactId;
@@ -104,8 +95,7 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet
 		private String AdditionalRecipients;
 
 		public ReportTask(String groupId, String artifactId, int period, String violationPriority,
-				String AdditionalRecipients)
-		{
+				String AdditionalRecipients) {
 			this.groupId = groupId;
 			this.artifactId = artifactId;
 			this.period = period;
@@ -113,25 +103,20 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet
 			this.AdditionalRecipients = AdditionalRecipients;
 		}
 
-		public void run()
-		{
+		public void run() {
 			generateAndSendEmail();
 		}
 
-		public String generateAndSendEmail()
-		{
+		public String generateAndSendEmail() {
 			Properties properties = ProjectContext.getProperties(groupId + ":" + artifactId);
 
-			if (properties == null)
-			{
+			if (properties == null) {
 				return "properties not found";
 			}
-			if (period == 0)
-			{
+			if (period == 0) {
 				period = Integer.valueOf(properties.getProperty(ArtifactReportConstant.DEFAULT_PERIOD));
 			}
-			if (violationPriority == null || "".equalsIgnoreCase(violationPriority))
-			{
+			if (violationPriority == null || "".equalsIgnoreCase(violationPriority)) {
 				violationPriority = properties.getProperty(ArtifactReportConstant.DEFAULT_PRIORITY);
 			}
 
@@ -147,25 +132,32 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet
 
 			IVersionService versionService = new VersionService();
 			Map<String, LogEntry> versionDetails = new HashMap<String, LogEntry>();
-			try
-			{
+			try {
+				EncryptUtil encryptUtil = new EncryptUtil();
 				String privateKeyFilePath = System.getProperty("user.home") + File.separator + GobalConstant.HOME_DIR
 						+ File.separator + GobalConstant.WORKSPACE + File.separator + groupId + "$" + artifactId
 						+ File.separator + GobalConstant.PRIVATE_KEY;
 
-				versionService.initialize(groupId, artifactId, properties.getProperty(ArtifactReportConstant.VER_URL),
+				versionService.initialize(
+						groupId,
+						artifactId,
+						properties.getProperty(ArtifactReportConstant.VER_URL),
 						properties.getProperty(ArtifactReportConstant.VER_USER),
-						properties.getProperty(ArtifactReportConstant.VER_PWD),
-						Boolean.valueOf(properties.getProperty(ArtifactReportConstant.VER_PRV)), privateKeyFilePath,
-						properties.getProperty(ArtifactReportConstant.VER_PPWD));
+						properties.getProperty(ArtifactReportConstant.VER_PWD) == null
+								|| properties.getProperty(ArtifactReportConstant.VER_PWD).length() == 0 ? properties
+								.getProperty(ArtifactReportConstant.VER_PWD) : encryptUtil.decrypt(properties
+								.getProperty(ArtifactReportConstant.VER_PWD)),
+						Boolean.valueOf(properties.getProperty(ArtifactReportConstant.VER_PRV)),
+						privateKeyFilePath,
+						properties.getProperty(ArtifactReportConstant.VER_PPWD) == null
+								|| properties.getProperty(ArtifactReportConstant.VER_PWD).length() == 0 ? properties
+								.getProperty(ArtifactReportConstant.VER_PPWD) : encryptUtil.decrypt(properties
+								.getProperty(ArtifactReportConstant.VER_PPWD)));
 
 				Set<String> qNameSet = new HashSet<String>();
-				for (Collection<Violation> eachPriority : violationDetails.values())
-				{
-					for (Violation eachViolation : eachPriority)
-					{
-						for (Project project : eachViolation.getProjects())
-						{
+				for (Collection<Violation> eachPriority : violationDetails.values()) {
+					for (Violation eachViolation : eachPriority) {
+						for (Project project : eachViolation.getProjects()) {
 							qNameSet.add(project.getLongName());
 						}
 					}
@@ -173,8 +165,7 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet
 
 				versionDetails = versionService.findLatestLogEntriesByQualifiedClassNames(qNameSet);
 
-			} catch (SVNException e)
-			{
+			} catch (SVNException e) {
 				e.printStackTrace();
 			}
 
@@ -188,29 +179,23 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet
 			reportSummary.put("period", String.valueOf(period));
 
 			VelocityEngine ve = new VelocityEngine();
-			try
-			{
+			try {
 				Properties p = new Properties();
 				p.setProperty("file.resource.loader.path", System.getProperty("user.home") + File.separator
 						+ GobalConstant.HOME_DIR + File.separator + GobalConstant.TEMPLATE_DIR);
 				ve.init(p);
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			Template template = null;
-			try
-			{
+			try {
 				template = ve.getTemplate("violationChangeReport.vm");
-			} catch (ResourceNotFoundException e)
-			{
+			} catch (ResourceNotFoundException e) {
 				e.printStackTrace();
-			} catch (ParseErrorException e)
-			{
+			} catch (ParseErrorException e) {
 				e.printStackTrace();
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
@@ -224,44 +209,42 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet
 			IMailService mailService = new MailService();
 			mailService.setSmtp("smtp3.hp.com");
 			EMail mail = new EMail();
-			mail.setFrom("fms-violation@hp.com");
 			Set<String> to = new HashSet<String>();
 			String emailList = properties.getProperty(ArtifactReportConstant.DEFAULT_EMAIL_LIST);
+            String emailFrom = properties.getProperty(ArtifactReportConstant.DEFAULT_EMAIL_SENDER);
 
-			for (String email : emailList.split(","))
-			{
+			for (String email : emailList.split(",")) {
 				to.add(email);
 			}
 
 			String periodDec = "";
-			if (period == 1)
-			{
+			if (period == 1) {
 				periodDec = "SincePrevious";
-			} else if (period == 2)
-			{
+			} else if (period == 2) {
 				periodDec = "Weekly";
-			} else if (period == 3)
-			{
+			} else if (period == 3) {
 				periodDec = "Monthly";
 			}
 
 			mail.setDate(reportDate);
 			mail.setSubject(artifactId + " violation change report  [" + periodDec + "]" + "  [" + reportDate + "]");
 			mail.setToList(to);
+			if (emailFrom!=null && emailFrom!=""){
+			    mail.setFrom(emailFrom);
+			}else{
+                mail.setFrom(GobalConstant.DEFAULT_EMAIL);
+			}
 
 			Set<String> cc = new HashSet<String>();
-			if (AdditionalRecipients != null)
-			{
-				for (String email : AdditionalRecipients.split(","))
-				{
+			if (AdditionalRecipients != null) {
+				for (String email : AdditionalRecipients.split(",")) {
 					to.add(email);
 				}
 				mail.setCcList(cc);
 			}
 
 			/**/
-			if (mail.getToList().size() != 0 || mail.getCcList().size() != 0)
-			{
+			if (mail.getToList().size() != 0 || mail.getCcList().size() != 0) {
 				mail.setContent(content);
 				mailService.sendMail(mail);
 			}

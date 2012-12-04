@@ -11,4 +11,6 @@ public class GobalConstant
 	public static final String PRIVATE_KEY = "private.pfx";
 
 	public static final String TEMPLATE_DIR = "template";
+
+    public static final String DEFAULT_EMAIL = "sonar-violation@hp.com";
 }

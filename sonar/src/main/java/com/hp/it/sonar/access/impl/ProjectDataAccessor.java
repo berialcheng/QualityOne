@@ -12,14 +12,12 @@ import javax.sql.DataSource;
 import com.hp.it.sonar.access.ProjectAccessor;
 import com.hp.it.sonar.bean.Project;
 
-public class ProjectDataAccessor implements ProjectAccessor
-{
+public class ProjectDataAccessor implements ProjectAccessor {
 	private final static String SELECT = "select * from projects p ";
 
 	private DataSource dataSource;
 
-	public ProjectDataAccessor(DataSource pool)
-	{
+	public ProjectDataAccessor(DataSource pool) {
 		dataSource = pool;
 	}
 
@@ -28,19 +26,16 @@ public class ProjectDataAccessor implements ProjectAccessor
 	 * 
 	 * @see com.hp.it.sonar.dao.impl.ProjectAccessor#getProjectById(int)
 	 */
-	public Project getProjectById(int id)
-	{
+	public Project getProjectById(int id) {
 		Project proj = new Project();
 		Connection conn = null;
 
-		try
-		{
+		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(SELECT + "where p.id = ?");
 			ps.setInt(1, id);
 			ResultSet set = ps.executeQuery();
-			if (set.next())
-			{
+			if (set.next()) {
 				proj.setId(set.getInt("id"));
 				proj.setRootId(set.getInt("root_id"));
 				proj.setScope(set.getString("scope"));
@@ -50,19 +45,14 @@ public class ProjectDataAccessor implements ProjectAccessor
 				proj.setName(set.getString("name"));
 				proj.setLongName(set.getString("long_name"));
 			}
-		} catch (SQLException e1)
-		{
+		} catch (SQLException e1) {
 			e1.printStackTrace();
-		} finally
-		{
-			try
-			{
-				if (conn != null || !conn.isClosed())
-				{
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-			} catch (SQLException e)
-			{
+			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
@@ -76,8 +66,7 @@ public class ProjectDataAccessor implements ProjectAccessor
 	 * com.hp.it.sonar.dao.impl.ProjectAccessor#getProject(java.lang.String,
 	 * java.lang.String)
 	 */
-	public Project getProject(String groupId, String artifactId)
-	{
+	public Project getProject(String groupId, String artifactId) {
 		String kee = groupId.trim() + ":" + artifactId.trim();
 		return getProject(kee);
 	}
@@ -88,19 +77,16 @@ public class ProjectDataAccessor implements ProjectAccessor
 	 * @see
 	 * com.hp.it.sonar.dao.impl.ProjectAccessor#getProject(java.lang.String)
 	 */
-	public Project getProject(String kee)
-	{
+	public Project getProject(String kee) {
 		Project proj = new Project();
 		Connection conn = null;
 
-		try
-		{
+		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(SELECT + "where p.kee = ?");
 			ps.setString(1, kee);
 			ResultSet set = ps.executeQuery();
-			if (set.next())
-			{
+			if (set.next()) {
 				proj.setId(set.getInt("id"));
 				proj.setRootId(set.getInt("root_id"));
 				proj.setScope(set.getString("scope"));
@@ -111,19 +97,14 @@ public class ProjectDataAccessor implements ProjectAccessor
 				proj.setLongName(set.getString("long_name"));
 			}
 
-		} catch (SQLException e1)
-		{
+		} catch (SQLException e1) {
 			e1.printStackTrace();
-		} finally
-		{
-			try
-			{
-				if (conn != null || !conn.isClosed())
-				{
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-			} catch (SQLException e)
-			{
+			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
@@ -138,19 +119,16 @@ public class ProjectDataAccessor implements ProjectAccessor
 	 * com.hp.it.sonar.dao.impl.ProjectAccessor#getProject(java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
-	public Project getProject(String groupId, String artifactId, String qualifiedClassName)
-	{
+	public Project getProject(String groupId, String artifactId, String qualifiedClassName) {
 		Project proj = new Project();
 		Connection conn = null;
 
-		try
-		{
+		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(SELECT + "where p.kee = ?");
 			ps.setString(1, groupId.trim() + ":" + artifactId.trim() + ":" + qualifiedClassName.trim());
 			ResultSet set = ps.executeQuery();
-			if (set.next())
-			{
+			if (set.next()) {
 				proj.setId(set.getInt("id"));
 				proj.setRootId(set.getInt("root_id"));
 				proj.setScope(set.getString("scope"));
@@ -160,19 +138,14 @@ public class ProjectDataAccessor implements ProjectAccessor
 				proj.setName(set.getString("name"));
 				proj.setLongName(set.getString("long_name"));
 			}
-		} catch (SQLException e1)
-		{
+		} catch (SQLException e1) {
 			e1.printStackTrace();
-		} finally
-		{
-			try
-			{
-				if (conn != null || !conn.isClosed())
-				{
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-			} catch (SQLException e)
-			{
+			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
@@ -185,19 +158,16 @@ public class ProjectDataAccessor implements ProjectAccessor
 	 * 
 	 * @see com.hp.it.sonar.dao.impl.ProjectAccessor#getProjectsByRootId(int)
 	 */
-	public Collection<Project> getProjectsByRootId(int rootId)
-	{
+	public Collection<Project> getProjectsByRootId(int rootId) {
 		Collection<Project> projs = new ArrayList();
 		Connection conn = null;
 
-		try
-		{
+		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(SELECT + "where p.root_id = ?");
 			ps.setInt(1, rootId);
 			ResultSet set = ps.executeQuery();
-			while (set.next())
-			{
+			while (set.next()) {
 				Project proj = new Project();
 
 				proj.setId(set.getInt("id"));
@@ -211,32 +181,25 @@ public class ProjectDataAccessor implements ProjectAccessor
 
 				projs.add(proj);
 			}
-		} catch (SQLException e1)
-		{
+		} catch (SQLException e1) {
 			e1.printStackTrace();
-		} finally
-		{
-			try
-			{
-				if (conn != null || !conn.isClosed())
-				{
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-			} catch (SQLException e)
-			{
+			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 		return projs;
 	}
 
-	public DataSource getDataSource()
-	{
+	public DataSource getDataSource() {
 		return dataSource;
 	}
 
-	public void setDataSource(DataSource connectionPool)
-	{
+	public void setDataSource(DataSource connectionPool) {
 		this.dataSource = connectionPool;
 	}
 

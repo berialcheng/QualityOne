@@ -43,11 +43,11 @@ public class PortalDataAccessor implements PortalAccessor {
 			URL url = new URL(urlStr);
 			String content = StringUtil.urlToString(url);
 			Pattern pa = Pattern
-					.compile("<span id='m_(blocker|critical|major|minor|info)_violations'.*>(.*)</span>.*</td>\\s<td>\\s<span class='var'><b>(.*)</b></span></td>");
+					.compile("<span id='m_(blocker|critical|major|minor|info)_violations'.*>(.*)</span>.*</td>\\s<td>\\s<span class='var(.*)'><b>(.*)</b></span></td>");
 			Matcher ma = pa.matcher(content);
 
 			while (ma.find()) {
-				map.put(ma.group(1), ma.group(2).replaceAll(",", "") + " " + ma.group(3).replaceAll(",", ""));
+				map.put(ma.group(1), ma.group(2).replaceAll(",", "") + " " + ma.group(4).replaceAll(",", ""));
 			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

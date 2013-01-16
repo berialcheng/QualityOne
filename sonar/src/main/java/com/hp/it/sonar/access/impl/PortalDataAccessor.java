@@ -61,7 +61,7 @@ public class PortalDataAccessor implements PortalAccessor {
 				.replaceFirst("::projectId", String.valueOf(root.getId()))
 				.replaceFirst("::periodPhase", String.valueOf(period))
 				.replaceFirst("::priority", violationPriority.toUpperCase());
-		String regex = "<td>\\s<a href=\"(.*)\" title=\"\\w*:\\s(.*)\">(.*)</a>\\s</td>\\s<td class=\"right\" nowrap=\"nowrap\">\\s<span><span class='var'>(\\+|-)(\\d+)</span></span>\\s</td>";
+		String regex = "<td>\\s<a href=\"(.*)\" title=\"\\w*:\\s(.*)\">(.*)</a>\\s*</td>\\s<td class=\"right\" nowrap=\"nowrap\">\\s*<span><span class=.*>(\\+|-)(\\d+)</span></span>\\s</td>";
 
 		Matcher ma = null;
 		try {
@@ -100,7 +100,7 @@ public class PortalDataAccessor implements PortalAccessor {
 				URL url = new URL(tempUrlStr + ma.group(1));
 				String eachViolation = StringUtil.urlToString(url);
 				Pattern pa2 = Pattern
-						.compile("<img alt=\"Class\" src=\".*/images/q/CLA.png\\?\\d+\" title=\"Class\" />\\s<a href=\"#\" onclick=\".*\" alt=\"(.*)\" title=\"(.*)\">(.*)</a>\\s+</td>\\s<td class=\"right last\" nowrap>\\s<span class='var'>(\\+|-)(\\d+)</span><!--\\[if IE\\]> &nbsp; &nbsp; <\\!\\[endif\\]-->\\s</td>");
+						.compile("<img.*src=\".*/images/q/CLA.png\\?\\d+\".*/>.*\\s*<a href=\"#\" onclick=.*\\s*alt=\"(.*)\" title=\"(.*)\">(.*)</a>\\s*</td>\\s*<td class=\"right.*\" nowrap>\\s*<span class=.*>(\\+|-)(\\d+)</span>\\s*.*\\s*</td>");
 				Matcher ma2 = pa2.matcher(eachViolation);
 				while (ma2.find()) {
 					Project proj = projectDao.getProject(root.getKee() + ":" + ma2.group(1));

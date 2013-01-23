@@ -14,5 +14,6 @@
   	<module>report</module>
   	<module>server</module>
   	<module>resource</module>
+  	<module>one</module>
   </modules>
 </project>

@@ -5,7 +5,6 @@ import java.util.Set;
 
 public class EMail
 {
-
 	private Set<String> bccList;
 
 	private Set<String> ccList;

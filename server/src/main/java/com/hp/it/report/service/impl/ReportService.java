@@ -88,9 +88,6 @@ public class ReportService implements IReportService
 		} catch (MethodInvocationException e)
 		{
 			e.printStackTrace();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
 		}
 		return w.toString();
 	}
@@ -121,9 +118,6 @@ public class ReportService implements IReportService
 		{
 			e.printStackTrace();
 		} catch (MethodInvocationException e)
-		{
-			e.printStackTrace();
-		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}

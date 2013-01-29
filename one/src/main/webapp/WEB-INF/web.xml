@@ -12,7 +12,7 @@
 	</welcome-file-list>
 	
 	<listener>
-		<listener-class>ContextInitializeListener</listener-class>
+		<listener-class>org.argus.core.ContextInitializeListener</listener-class>
 	</listener>
 	
     <servlet>

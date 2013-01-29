@@ -126,8 +126,8 @@ public class ContextInitializerListener implements ServletContextListener
 			do
 			{
 				byte[] by = new byte[1024];
-				is.read(by, 0, 1024);
-				fos.write(by);
+				int length = is.read(by);
+				fos.write(by,0,length);
 			} while (is.available() > 0);
 			is.close();
 			fos.close();

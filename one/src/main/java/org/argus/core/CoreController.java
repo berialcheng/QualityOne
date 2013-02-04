@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/*")
 public class CoreController {
 	
-	@RequestMapping()
+	@RequestMapping
 	public void handleGetRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String releativePath = request.getPathInfo();
 		Rule rule = RouteUtils.resolveRoute(releativePath);
@@ -31,6 +31,5 @@ public class CoreController {
 				break;
 			}
 		}
-		
 	}
 }

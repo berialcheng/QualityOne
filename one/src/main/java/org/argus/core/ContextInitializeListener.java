@@ -15,7 +15,7 @@ public class ContextInitializeListener implements ServletContextListener{
 		File homeDir = new File(homePath);
 		if(!homeDir.exists())
 		{
-			homeDir.mkdir();
+			homeDir.mkdirs();
 		}
 		
 		//initialize route configuration

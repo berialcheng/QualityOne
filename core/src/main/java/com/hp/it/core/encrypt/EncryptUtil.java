@@ -1,4 +1,4 @@
-package com.hp.it.encrypt;
+package com.hp.it.core.encrypt;
 
 import java.io.UnsupportedEncodingException;
 import java.security.Provider;

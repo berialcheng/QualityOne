@@ -2,7 +2,7 @@
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.io.*"%>
 <%@ page import="java.net.*"%>
-<%@ page import="com.hp.it.encrypt.*"%>
+<%@ page import="com.hp.it.core.encrypt.*"%>
 <!DOCTYPE HTML>
 <html>
 <head>

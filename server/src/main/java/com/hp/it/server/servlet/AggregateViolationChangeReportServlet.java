@@ -26,7 +26,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.tmatesoft.svn.core.SVNException;
 
-import com.hp.it.encrypt.EncryptUtil;
+import com.hp.it.core.encrypt.EncryptUtil;
 import com.hp.it.mail.bean.EMail;
 import com.hp.it.mail.service.IMailService;
 import com.hp.it.mail.service.impl.MailService;

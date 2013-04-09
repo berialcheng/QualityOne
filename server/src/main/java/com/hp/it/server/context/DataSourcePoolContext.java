@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import com.hp.it.encrypt.EncryptUtil;
+import com.hp.it.core.encrypt.EncryptUtil;
 import com.hp.it.resource.ds.DataSourceFactory;
 import com.hp.it.server.configuration.ArtifactReportConstant;
 

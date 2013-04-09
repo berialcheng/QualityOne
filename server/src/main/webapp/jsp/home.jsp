@@ -48,23 +48,12 @@
 					<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum
 						massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
 					
-					<ul class="dropdown-menu">
-						<%
-							for (String title : artifactList) {
-								String[] tokens = title.split(":");    
-						%>
-						<li><a>><%=tokens[0]%>  <%=tokens[1]%></a</li>
-						<%
-							}
-						%>
-					</ul>
-					
 					<table class="table">
 						<%
 							for (String title : artifactList) {
 								String[] tokens = title.split(":");    
 						%>
-						<tr><td><%=tokens[0]%></td><td><%=tokens[1]%></td></tr>
+						<tr><td class="btn-link"><a><%=tokens[0]%>   <%=tokens[1]%></a></td></tr>
 						<%
 							}
 						%>

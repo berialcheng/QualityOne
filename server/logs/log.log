@@ -8164,3 +8164,48 @@ javax.servlet.ServletException: Circular view path [index]: would dispatch back 
 2013-04-09 18:29:01 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Rendering view [org.springframework.web.servlet.view.InternalResourceView: name 'home'; URL [/jsp/home.jsp]] in DispatcherServlet with name 'DispatcherServlet'
 2013-04-09 18:29:01 [org.springframework.web.servlet.view.InternalResourceView]-[DEBUG] Forwarding to resource [/jsp/home.jsp] in InternalResourceView 'home'
 2013-04-09 18:29:01 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Successfully completed request
+2013-04-09 18:31:13 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] DispatcherServlet with name 'DispatcherServlet' processing GET request for [/server/console/home]
+2013-04-09 18:31:13 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Matching patterns for request [/home] are [//{command}]
+2013-04-09 18:31:13 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] URI Template variables for request [/home] are {command=home}
+2013-04-09 18:31:13 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Mapping [/home] to HandlerExecutionChain with handler [com.hp.it.mvc.controller.ConsoleController@75f10df7] and 2 interceptors
+2013-04-09 18:31:13 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Last-Modified value for [/server/console/home] is: -1
+2013-04-09 18:31:13 [org.springframework.web.bind.annotation.support.HandlerMethodInvoker]-[DEBUG] Invoking request handler method: public org.springframework.web.servlet.ModelAndView com.hp.it.mvc.controller.ConsoleController.handleRequest(java.lang.String,javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse) throws java.lang.Exception
+2013-04-09 18:31:13 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Rendering view [org.springframework.web.servlet.view.InternalResourceView: name 'home'; URL [/jsp/home.jsp]] in DispatcherServlet with name 'DispatcherServlet'
+2013-04-09 18:31:13 [org.springframework.web.servlet.view.InternalResourceView]-[DEBUG] Forwarding to resource [/jsp/home.jsp] in InternalResourceView 'home'
+2013-04-09 18:31:14 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Successfully completed request
+2013-04-09 18:32:19 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] DispatcherServlet with name 'DispatcherServlet' processing GET request for [/server/console/home]
+2013-04-09 18:32:19 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Matching patterns for request [/home] are [//{command}]
+2013-04-09 18:32:19 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] URI Template variables for request [/home] are {command=home}
+2013-04-09 18:32:19 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Mapping [/home] to HandlerExecutionChain with handler [com.hp.it.mvc.controller.ConsoleController@75f10df7] and 2 interceptors
+2013-04-09 18:32:19 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Last-Modified value for [/server/console/home] is: -1
+2013-04-09 18:32:19 [org.springframework.web.bind.annotation.support.HandlerMethodInvoker]-[DEBUG] Invoking request handler method: public org.springframework.web.servlet.ModelAndView com.hp.it.mvc.controller.ConsoleController.handleRequest(java.lang.String,javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse) throws java.lang.Exception
+2013-04-09 18:32:19 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Rendering view [org.springframework.web.servlet.view.InternalResourceView: name 'home'; URL [/jsp/home.jsp]] in DispatcherServlet with name 'DispatcherServlet'
+2013-04-09 18:32:19 [org.springframework.web.servlet.view.InternalResourceView]-[DEBUG] Forwarding to resource [/jsp/home.jsp] in InternalResourceView 'home'
+2013-04-09 18:32:19 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Successfully completed request
+2013-04-09 18:34:29 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] DispatcherServlet with name 'DispatcherServlet' processing GET request for [/server/console/home]
+2013-04-09 18:34:29 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Matching patterns for request [/home] are [//{command}]
+2013-04-09 18:34:29 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] URI Template variables for request [/home] are {command=home}
+2013-04-09 18:34:29 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Mapping [/home] to HandlerExecutionChain with handler [com.hp.it.mvc.controller.ConsoleController@75f10df7] and 2 interceptors
+2013-04-09 18:34:29 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Last-Modified value for [/server/console/home] is: -1
+2013-04-09 18:34:29 [org.springframework.web.bind.annotation.support.HandlerMethodInvoker]-[DEBUG] Invoking request handler method: public org.springframework.web.servlet.ModelAndView com.hp.it.mvc.controller.ConsoleController.handleRequest(java.lang.String,javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse) throws java.lang.Exception
+2013-04-09 18:34:29 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Rendering view [org.springframework.web.servlet.view.InternalResourceView: name 'home'; URL [/jsp/home.jsp]] in DispatcherServlet with name 'DispatcherServlet'
+2013-04-09 18:34:29 [org.springframework.web.servlet.view.InternalResourceView]-[DEBUG] Forwarding to resource [/jsp/home.jsp] in InternalResourceView 'home'
+2013-04-09 18:34:29 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Successfully completed request
+2013-04-09 18:35:01 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] DispatcherServlet with name 'DispatcherServlet' processing GET request for [/server/console/home]
+2013-04-09 18:35:01 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Matching patterns for request [/home] are [//{command}]
+2013-04-09 18:35:01 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] URI Template variables for request [/home] are {command=home}
+2013-04-09 18:35:01 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Mapping [/home] to HandlerExecutionChain with handler [com.hp.it.mvc.controller.ConsoleController@75f10df7] and 2 interceptors
+2013-04-09 18:35:01 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Last-Modified value for [/server/console/home] is: -1
+2013-04-09 18:35:01 [org.springframework.web.bind.annotation.support.HandlerMethodInvoker]-[DEBUG] Invoking request handler method: public org.springframework.web.servlet.ModelAndView com.hp.it.mvc.controller.ConsoleController.handleRequest(java.lang.String,javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse) throws java.lang.Exception
+2013-04-09 18:35:01 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Rendering view [org.springframework.web.servlet.view.InternalResourceView: name 'home'; URL [/jsp/home.jsp]] in DispatcherServlet with name 'DispatcherServlet'
+2013-04-09 18:35:01 [org.springframework.web.servlet.view.InternalResourceView]-[DEBUG] Forwarding to resource [/jsp/home.jsp] in InternalResourceView 'home'
+2013-04-09 18:35:01 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Successfully completed request
+2013-04-09 18:35:49 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] DispatcherServlet with name 'DispatcherServlet' processing GET request for [/server/console/home]
+2013-04-09 18:35:49 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Matching patterns for request [/home] are [//{command}]
+2013-04-09 18:35:49 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] URI Template variables for request [/home] are {command=home}
+2013-04-09 18:35:49 [org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping]-[DEBUG] Mapping [/home] to HandlerExecutionChain with handler [com.hp.it.mvc.controller.ConsoleController@75f10df7] and 2 interceptors
+2013-04-09 18:35:49 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Last-Modified value for [/server/console/home] is: -1
+2013-04-09 18:35:49 [org.springframework.web.bind.annotation.support.HandlerMethodInvoker]-[DEBUG] Invoking request handler method: public org.springframework.web.servlet.ModelAndView com.hp.it.mvc.controller.ConsoleController.handleRequest(java.lang.String,javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse) throws java.lang.Exception
+2013-04-09 18:35:49 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Rendering view [org.springframework.web.servlet.view.InternalResourceView: name 'home'; URL [/jsp/home.jsp]] in DispatcherServlet with name 'DispatcherServlet'
+2013-04-09 18:35:49 [org.springframework.web.servlet.view.InternalResourceView]-[DEBUG] Forwarding to resource [/jsp/home.jsp] in InternalResourceView 'home'
+2013-04-09 18:35:49 [org.springframework.web.servlet.DispatcherServlet]-[DEBUG] Successfully completed request

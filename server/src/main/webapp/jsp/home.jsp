@@ -44,9 +44,20 @@
 		<div class="container">
 			<div class="row">
 				<div class="span6">
-					<h3>Violation change report</h3>
+					<h3>Projects</h3>
 					<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum
 						massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
+					
+					<ul class="dropdown-menu">
+						<%
+							for (String title : artifactList) {
+								String[] tokens = title.split(":");    
+						%>
+						<li><a>><%=tokens[0]%>  <%=tokens[1]%></a</li>
+						<%
+							}
+						%>
+					</ul>
 					
 					<table class="table">
 						<%
@@ -60,7 +71,7 @@
 					</table>
 					
 					<p>
-						<a class="btn" href="#">Add violation change report</a>
+						<a class="btn btn-primary" href="#">Add project</a>
 					</p>
 				</div>
 				<div class="span6">
@@ -80,7 +91,7 @@
 					</table>
 					
 					<p>
-						<a class="btn" href="#">Add aggregate report</a>
+						<a class="btn btn-primary" href="#">Add aggregate report</a>
 					</p>
 				</div>
 			</div>

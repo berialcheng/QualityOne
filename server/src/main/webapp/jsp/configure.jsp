@@ -6,6 +6,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+<title>Query</title>
 <%@ include file="meta.jsp"%>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -18,7 +19,6 @@
 		});
 	});
 </script>
-<title>Query</title>
 </head>
 <body>
 	<div id="wrapper">
@@ -348,7 +348,7 @@
 				</tr>
 			</table>
 		</div>
-		<%@ include file="footer.jsp"%>
 	</div>
+	<%@ include file="footer.jsp"%>
 </body>
 </html>

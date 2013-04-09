@@ -16,10 +16,6 @@
 		<param-value>classpath:applicationContext.xml</param-value>
 	</context-param> -->
 
-	<listener>
-		<listener-class>com.hp.it.server.listener.LoggerInitializerListener</listener-class>
-	</listener>
-
 	<!-- <listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener> -->

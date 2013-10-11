@@ -1,7 +1,7 @@
-#QualityOne 
+## QualityOne 
 	Sonar violation ascend report 
 
-Release notes:
+## Releases notes:
 2.0
 	TODO
 1.0

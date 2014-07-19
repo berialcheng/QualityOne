@@ -75,11 +75,11 @@
          </td>
          <td>
            <table class="panel"  width="400px"><caption>Violation Dashboard</caption>
-             <tr><td  width="40%%"  bgcolor="#CCCCCC"><a>Blocker</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&priority=BLOCKER">$violationSummary.get("blocker")</a></td></tr>
-             <tr><td  bgcolor="#CCCCCC"><a>Critical</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&priority=CRITICAL">$violationSummary.get("critical")</a></td></tr>
-             <tr><td  bgcolor="#CCCCCC"><a>Major</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&priority=MAJOR">$violationSummary.get("major")</a></td></tr>
-             <tr><td  bgcolor="#CCCCCC"><a>Minor</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&priority=MINOR">$violationSummary.get("minor")</a></td></tr>
-             <tr><td  bgcolor="#CCCCCC"><a>Info</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&priority=INFO">$violationSummary.get("info")</a></td></tr>
+             <tr><td  width="40%%"  bgcolor="#CCCCCC"><a>Blocker</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&severity=BLOCKER">$violationSummary.get("blocker")</a></td></tr>
+             <tr><td  bgcolor="#CCCCCC"><a>Critical</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&severity=CRITICAL">$violationSummary.get("critical")</a></td></tr>
+             <tr><td  bgcolor="#CCCCCC"><a>Major</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&severity=MAJOR">$violationSummary.get("major")</a></td></tr>
+             <tr><td  bgcolor="#CCCCCC"><a>Minor</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&severity=MINOR">$violationSummary.get("minor")</a></td></tr>
+             <tr><td  bgcolor="#CCCCCC"><a>Info</a></td><td><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&severity=INFO">$violationSummary.get("info")</a></td></tr>
            </table>
          </td>
        </tr>
@@ -133,11 +133,7 @@
           ## Each table row ...
           #if($eachViolationCount == 1)
             #set($violationIdentifier = "")
-          	#if($violation.getRule().getPluginName()=="pmd")
-          		#set($violationIdentifier = $violation.getRule().getPluginRuleKey())
-          	#else
-          		#set($violationIdentifier = $violation.getRule().getName())
-          	#end
+          	    #set($violationIdentifier = $violation.getRule().getPortalDisplayName())
       <tr style="background-color:#6699CC;color:#FFFFFF"><td colspan="5"><a href="$reportSummary.get("portalURL")/drilldown/violations/$reportSummary.get("kee")?period=$reportSummary.get("period")&rule=$violation.getRule().getPluginName()%3A$violation.getRule().getPluginRuleKey()"  style="color:#FFFFFF">$violationIdentifier</a> ($violation.getDelta())</td></tr>
       <tr class="$sequence"><td><a href=$reportSummary.get("portalURL")/resource/index/$project.getId()?tab=violations&period=$reportSummary.get("period")&rule=$violation.getRule().getId()>$project.getName()</a></td><td>$latestTs</td><td>$message</td><td>$project.getViolationDelta()</td><td>$author</td></tr>
           #else

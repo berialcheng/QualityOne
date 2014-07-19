@@ -9,7 +9,7 @@ import com.hp.it.version.bean.LogEntry;
 
 public interface IVersionService {
 	
-	public void initialize(String groupId, String artifactId, String urlStr, String userName, String password,
+	public void initialize(String groupId, String artifactId,String branch, String urlStr, String userName, String password,
 			boolean usingPrivateKey, String privateKeyFilePath, String passphrase) throws SVNException;
 
 	public int getLatestVersion();

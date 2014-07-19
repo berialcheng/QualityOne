@@ -66,8 +66,11 @@ public class ProjectDataAccessor implements ProjectAccessor {
 	 * com.hp.it.sonar.dao.impl.ProjectAccessor#getProject(java.lang.String,
 	 * java.lang.String)
 	 */
-	public Project getProject(String groupId, String artifactId) {
+	public Project getProject(String groupId, String artifactId , String branch) {
 		String kee = groupId.trim() + ":" + artifactId.trim();
+		if(branch != null){
+			kee += ":" + branch.trim();
+		}
 		return getProject(kee);
 	}
 
@@ -119,14 +122,22 @@ public class ProjectDataAccessor implements ProjectAccessor {
 	 * com.hp.it.sonar.dao.impl.ProjectAccessor#getProject(java.lang.String,
 	 * java.lang.String, java.lang.String)
 	 */
-	public Project getProject(String groupId, String artifactId, String qualifiedClassName) {
+	public Project getProject(String groupId, String artifactId, String branch , String qualifiedClassName) {
 		Project proj = new Project();
 		Connection conn = null;
 
 		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(SELECT + "where p.kee = ?");
-			ps.setString(1, groupId.trim() + ":" + artifactId.trim() + ":" + qualifiedClassName.trim());
+			
+			String kee = null;
+			if(branch != null){
+				kee = groupId.trim() + ":" + artifactId.trim() + ":" + branch.trim() + ":" + qualifiedClassName.trim();
+			}else{
+				kee = groupId.trim() + ":" + artifactId.trim() + ":" + qualifiedClassName.trim();
+			}
+			
+			ps.setString(1, kee);
 			ResultSet set = ps.executeQuery();
 			if (set.next()) {
 				proj.setId(set.getInt("id"));

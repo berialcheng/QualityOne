@@ -51,5 +51,4 @@ public class Violation
 	{
 		this.ascend = ascend;
 	}
-
 }

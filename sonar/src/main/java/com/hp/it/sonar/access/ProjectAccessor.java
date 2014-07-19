@@ -9,11 +9,11 @@ public interface ProjectAccessor
 
 	public Project getProjectById(int id);
 
-	public Project getProject(String groupId, String artifactId);
+	public Project getProject(String groupId, String artifactId , String branch);
 
 	public Project getProject(String kee);
 
-	public Project getProject(String groupId, String artifactId, String qualifiedClassName);
+	public Project getProject(String groupId, String artifactId, String branch , String qualifiedClassName);
 
 	public Collection<Project> getProjectsByRootId(int rootId);
 }

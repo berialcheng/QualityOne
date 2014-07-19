@@ -24,7 +24,7 @@ public class SonarReportConfigurationServlet extends HttpServlet {
 		boolean result = handler.handle(action, req);
 		if ("D".equalsIgnoreCase(action)) {
 			try {
-				resp.sendRedirect(this.getServletContext().getContextPath());
+				resp.sendRedirect(this.getServletConfig().getServletContext().getContextPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

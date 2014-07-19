@@ -13,6 +13,6 @@
   	<module>sonar</module>
   	<module>report</module>
   	<module>server</module>
-  	<module>core</module>
+  	<module>resource</module>
   </modules>
 </project>

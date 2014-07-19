@@ -47,9 +47,9 @@ public class ViolationService implements IViolationService
 	 * com.hp.it.sonar.service.impl.IViolationService#retrieveViolationSummary
 	 * (java.lang.String, java.lang.String, int)
 	 */
-	public Map<String, String> retrieveViolationSummary(String groupId, String artifactId, int period)
+	public Map<String, String> retrieveViolationSummary(String groupId, String artifactId, String branch,  int period)
 	{
-		Map retval = portalDao.retrieveViolationChangeSummary(groupId, artifactId, period);
+		Map retval = portalDao.retrieveViolationChangeSummary(groupId, artifactId,branch, period);
 		Map sortedMap = new TreeMap(new SeverityComp());
 		sortedMap.putAll(retval);
 		return sortedMap;
@@ -62,31 +62,31 @@ public class ViolationService implements IViolationService
 	 * com.hp.it.sonar.service.impl.IViolationService#retrieveViolationDetails
 	 * (java.lang.String, java.lang.String, int, java.lang.String)
 	 */
-	public Map<String, Collection<Violation>> retrieveViolationDetails(String groupId, String artifactId, int period,
+	public Map<String, Collection<Violation>> retrieveViolationDetails(String groupId, String artifactId,String branch, int period,
 			String violationPriority)
 	{
 		Map<String, Collection<Violation>> violationDetails = new TreeMap<String, Collection<Violation>>(
 				new SeverityComp());
 
-		Collection<Violation> blockers = retrieveViolationDetailsByPriority(groupId, artifactId, period, "BLOCKER");
+		Collection<Violation> blockers = retrieveViolationDetailsByPriority(groupId, artifactId,branch , period, "BLOCKER");
 		violationDetails.put("BLOCKER", blockers);
 		if (!"BLOCKER".equalsIgnoreCase(violationPriority))
 		{
-			Collection<Violation> criticals = retrieveViolationDetailsByPriority(groupId, artifactId, period,
+			Collection<Violation> criticals = retrieveViolationDetailsByPriority(groupId, artifactId,branch, period,
 					"CRITICAL");
 			violationDetails.put("CRITICAL", criticals);
 			if (!"CRITICAL".equalsIgnoreCase(violationPriority))
 			{
-				Collection<Violation> majors = retrieveViolationDetailsByPriority(groupId, artifactId, period, "MAJOR");
+				Collection<Violation> majors = retrieveViolationDetailsByPriority(groupId, artifactId,branch, period, "MAJOR");
 				violationDetails.put("MAJOR", majors);
 				if (!"MAJOR".equalsIgnoreCase(violationPriority))
 				{
-					Collection<Violation> minors = retrieveViolationDetailsByPriority(groupId, artifactId, period,
+					Collection<Violation> minors = retrieveViolationDetailsByPriority(groupId, artifactId,branch, period,
 							"MINOR");
 					violationDetails.put("MINOR", minors);
 					if (!"MINOR".equalsIgnoreCase(violationPriority))
 					{
-						Collection<Violation> infos = retrieveViolationDetailsByPriority(groupId, artifactId, period,
+						Collection<Violation> infos = retrieveViolationDetailsByPriority(groupId, artifactId,branch, period,
 								"INFO");
 						violationDetails.put("INFO", infos);
 					}
@@ -96,17 +96,21 @@ public class ViolationService implements IViolationService
 		return violationDetails;
 	}
 
-	public Collection<Violation> retrieveViolationDetailsByPriority(String groupId, String artifactId, int period,
+	public Collection<Violation> retrieveViolationDetailsByPriority(String groupId, String artifactId, String branch , int period,
 			String violationPriority)
 	{
-		Project project = projectDao.getProject(groupId, artifactId);
+		Project project = projectDao.getProject(groupId, artifactId, branch);
 		Collection<Violation> violations = new ArrayList<Violation>();
 		recursive(project, violations, period, violationPriority);
         for (Violation vio : violations)
         {
             for (Project pro : vio.getProjects())
             {
-                pro.setKee(groupId + ":" + artifactId);
+            	if(branch!=null){
+            		pro.setKee(groupId + ":" + artifactId);
+            	}else{
+            		pro.setKee(groupId + ":" + artifactId + ":" + branch);
+            	}
             }
         }
 		return violations;

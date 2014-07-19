@@ -8,7 +8,7 @@ import com.hp.it.sonar.bean.Violation;
 
 public interface PortalAccessor
 {
-	public Map<String, String> retrieveViolationChangeSummary(String group, String artifact, int period);
+	public Map<String, String> retrieveViolationChangeSummary(String group, String artifact, String branch, int period);
 
 	public void retrieveRecentChange(Project root, Collection<Violation> violations, int period,
 			String violationPriority);

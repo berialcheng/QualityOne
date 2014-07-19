@@ -110,4 +110,8 @@ public class Project
 		this.longName = longName;
 	}
 
+	@Override
+	public String toString(){
+		return kee;
+	}
 }

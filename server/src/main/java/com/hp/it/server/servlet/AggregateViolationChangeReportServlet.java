@@ -26,7 +26,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.tmatesoft.svn.core.SVNException;
 
-import com.hp.it.core.encrypt.EncryptUtil;
+import com.hp.it.encrypt.EncryptUtil;
 import com.hp.it.mail.bean.EMail;
 import com.hp.it.mail.service.IMailService;
 import com.hp.it.mail.service.impl.MailService;
@@ -54,7 +54,7 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 
 		try {
 			appContextPath = "http://" + InetAddress.getLocalHost().getCanonicalHostName() + ":" + req.getLocalPort()
-					+ this.getServletContext().getContextPath();
+					+ this.getServletConfig().getServletContext().getContextPath();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -283,6 +283,7 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 				versionService.initialize(
 						id[0],
 						id[1],
+						null,
 						properties.getProperty(ArtifactReportConstant.VER_URL),
 						properties.getProperty(ArtifactReportConstant.VER_USER),
 						properties.getProperty(ArtifactReportConstant.VER_PWD) == null
@@ -322,7 +323,7 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 
 			IViolationService violationService = new ViolationService(dataSource,
 					properties.getProperty(ArtifactReportConstant.PORTAL_URL));
-			Map<String, String> violationSummary = violationService.retrieveViolationSummary(id[0], id[1], period);
+			Map<String, String> violationSummary = violationService.retrieveViolationSummary(id[0], id[1], null, period);
 			Map<String, Map<String, String>> retval = new TreeMap<String, Map<String, String>>();
 			retval.put(projectKee, violationSummary);
 			return retval;
@@ -340,7 +341,7 @@ public class AggregateViolationChangeReportServlet extends AbstractReportServlet
 					properties.getProperty(ArtifactReportConstant.PORTAL_URL));
 
 			Map<String, Collection<Violation>> violationDetails = violationService.retrieveViolationDetails(id[0],
-					id[1], period, violationPriority);
+					id[1],null,  period, violationPriority);
 			return violationDetails;
 		}
 

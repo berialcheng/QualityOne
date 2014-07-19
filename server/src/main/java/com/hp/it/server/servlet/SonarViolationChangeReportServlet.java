@@ -23,7 +23,7 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.tmatesoft.svn.core.SVNException;
 
-import com.hp.it.core.encrypt.EncryptUtil;
+import com.hp.it.encrypt.EncryptUtil;
 import com.hp.it.mail.bean.EMail;
 import com.hp.it.mail.service.IMailService;
 import com.hp.it.mail.service.impl.MailService;
@@ -56,6 +56,7 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet {
 
 		String groupId = req.getParameter("groupId");
 		String artifactId = req.getParameter("artifactId");
+		String branch = req.getParameter("branch");
 		int periodNum = 0;
 		String violationPriority = null;
 		String additionalRecipients = null;
@@ -73,7 +74,7 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet {
 			additionalRecipients = req.getParameter("AdditionalRecipients");
 		}
 
-		ReportTask task = new ReportTask(groupId, artifactId, periodNum, violationPriority, additionalRecipients);
+		ReportTask task = new ReportTask(groupId, artifactId, branch, periodNum, violationPriority, additionalRecipients);
 
 		if (req.getParameter("async") != null && "true".equalsIgnoreCase(req.getParameter("async"))) {
 			ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.getApplicationContext().getBean("threadPool");
@@ -90,14 +91,16 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet {
 
 		private String groupId;
 		private String artifactId;
+		private String branch;
 		private int period;
 		private String violationPriority;
 		private String AdditionalRecipients;
 
-		public ReportTask(String groupId, String artifactId, int period, String violationPriority,
+		public ReportTask(String groupId, String artifactId, String branch, int period, String violationPriority,
 				String AdditionalRecipients) {
 			this.groupId = groupId;
 			this.artifactId = artifactId;
+			this.branch = branch;
 			this.period = period;
 			this.violationPriority = violationPriority;
 			this.AdditionalRecipients = AdditionalRecipients;
@@ -108,7 +111,12 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet {
 		}
 
 		public String generateAndSendEmail() {
-			Properties properties = ProjectContext.getProperties(groupId + ":" + artifactId);
+			Properties properties = null;
+			if(branch != null){
+				properties = ProjectContext.getProperties(groupId + ":" + artifactId + ":" + branch);
+			}else{
+				properties = ProjectContext.getProperties(groupId + ":" + artifactId);
+			}
 
 			if (properties == null) {
 				return "properties not found";
@@ -120,15 +128,20 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet {
 				violationPriority = properties.getProperty(ArtifactReportConstant.DEFAULT_PRIORITY);
 			}
 
-			DataSource dataSource = DataSourcePoolContext.getDataSource(groupId + ":" + artifactId);
+			DataSource dataSource = null;
+			if(branch != null){
+				dataSource = DataSourcePoolContext.getDataSource(groupId + ":" + artifactId + ":" + branch);
+			}else{
+				dataSource = DataSourcePoolContext.getDataSource(groupId + ":" + artifactId);
+			}
 
 			IViolationService violationService = new ViolationService(dataSource,
 					properties.getProperty(ArtifactReportConstant.PORTAL_URL));
-			Map<String, String> violationSummary = violationService.retrieveViolationSummary(groupId, artifactId,
+			Map<String, String> violationSummary = violationService.retrieveViolationSummary(groupId, artifactId,branch,
 					period);
 
 			Map<String, Collection<Violation>> violationDetails = violationService.retrieveViolationDetails(groupId,
-					artifactId, period, violationPriority);
+					artifactId,branch, period, violationPriority);
 
 			IVersionService versionService = new VersionService();
 			Map<String, LogEntry> versionDetails = new HashMap<String, LogEntry>();
@@ -141,6 +154,7 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet {
 				versionService.initialize(
 						groupId,
 						artifactId,
+						branch,
 						properties.getProperty(ArtifactReportConstant.VER_URL),
 						properties.getProperty(ArtifactReportConstant.VER_USER),
 						properties.getProperty(ArtifactReportConstant.VER_PWD) == null
@@ -171,7 +185,11 @@ public class SonarViolationChangeReportServlet extends AbstractReportServlet {
 
 			IReportService reportService = new ReportService();
 			Map<String, String> reportSummary = new HashMap<String, String>();
-			reportSummary.put("kee", groupId + ":" + artifactId);
+			if(branch != null){
+				reportSummary.put("kee", groupId + ":" + artifactId + ":" + branch);
+			}else{
+				reportSummary.put("kee", groupId + ":" + artifactId);
+			}
 			reportSummary.put("reportDatetime", new Date().toString());
 			reportSummary.put("violationPriority", violationPriority);
 			reportSummary.put("headVersion", String.valueOf(versionService.getLatestVersion()));

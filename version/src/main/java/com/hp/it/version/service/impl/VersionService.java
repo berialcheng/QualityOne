@@ -59,7 +59,7 @@ public class VersionService implements IVersionService {
 		return latest;
 	}
 
-	public void initialize(String groupId, String artifactId, String urlStr, String userName, String password,
+	public void initialize(String groupId, String artifactId, String branch, String urlStr, String userName, String password,
 			boolean usingPrivateKey, String privateKeyFilePath, String passphrase) throws SVNException {
 
 		if ("".equalsIgnoreCase(userName) || "".equalsIgnoreCase(password)) {

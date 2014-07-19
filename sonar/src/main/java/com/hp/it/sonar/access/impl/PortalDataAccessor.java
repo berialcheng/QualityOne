@@ -21,7 +21,7 @@ public class PortalDataAccessor implements PortalAccessor {
 
 	private final static String PROJECT_OVERVIEW = "::portalURL/dashboard/index/::projectId?period=::periodPhase";
 
-	private final static String VIOLATION_DRILLDOWN = "::portalURL/drilldown/violations/::projectId?period=::periodPhase&priority=::priority";
+	private final static String VIOLATION_DRILLDOWN = "::portalURL/drilldown/issues/::projectId?period=::periodPhase&severity=::priority";
 
 	private String portalURL;
 
@@ -33,8 +33,8 @@ public class PortalDataAccessor implements PortalAccessor {
 		this.portalURL = portalURL;
 	}
 
-	public Map<String, String> retrieveViolationChangeSummary(String group, String artifact, int period) {
-		Project project = projectDao.getProject(group, artifact);
+	public Map<String, String> retrieveViolationChangeSummary(String group, String artifact,String branch, int period) {
+		Project project = projectDao.getProject(group, artifact , branch);
 		String urlStr = PROJECT_OVERVIEW.replaceFirst("::portalURL", this.portalURL)
 				.replaceFirst("::projectId", String.valueOf(project.getId()))
 				.replaceFirst("::periodPhase", String.valueOf(period));
@@ -79,6 +79,7 @@ public class PortalDataAccessor implements PortalAccessor {
 			Collection<Project> projects = new ArrayList<Project>();
 			violation.setProjects(projects);
 			Rule rule = ruleDao.getRuleByPluginRuleKey(ma.group(2));
+			rule.setPortalDisplayName(ma.group(3));
 			violation.setRule(rule);
 
 			if ("+".equals(ma.group(4))) {

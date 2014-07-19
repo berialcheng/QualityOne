@@ -17,6 +17,8 @@ public class Rule
 	private String name;
 
 	private int priority;
+	
+	private String portalDisplayName;
 
 	public int getPriority()
 	{
@@ -97,6 +99,14 @@ public class Rule
 	{
 		this.name = name;
 	}
+	
+	public String getPortalDisplayName() {
+		return portalDisplayName;
+	}
+
+	public void setPortalDisplayName(String portalDisplayName) {
+		this.portalDisplayName = portalDisplayName;
+	}
 
 	@Override
 	public boolean equals(Object obj)
@@ -117,5 +127,10 @@ public class Rule
 	public int hashCode()
 	{
 		return pluginRuleKey.hashCode() + pluginName.hashCode();
+	}
+	
+	@Override
+	public String toString(){
+		return name;
 	}
 }

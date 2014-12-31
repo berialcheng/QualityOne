@@ -1,14 +1,27 @@
-<!DOCTYPE HTML>
-<html ng-app>
-  <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
-  </head>
-  <body>
-    <div>
-      <label>Name:</label>
-      <input type="text" ng-model="yourName" placeholder="Enter a name here">
-      <hr>
-      <h1>Hello {{yourName}}!</h1>
-    </div>
-  </body>
+<!doctype html>
+<html ng-app="argus">
+<head>
+<title>QualityOne</title>
+<!-- scripts -->
+<script src="scripts/lib/angular.min.js"></script>
+<script src="scripts/lib/angular-resource.min.js"></script>
+<script src="scripts/lib/angular-route.min.js"></script>
+<script src="scripts/lib/jquery.min.js"></script>
+<script src="scripts/lib/bootstrap.min.js"></script>
+<script src="scripts/lib/ng-table.js"></script>
+<script src="scripts/argus.js"></script>
+<!-- styles -->
+<link href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.css" rel="stylesheet">
+<link href="css/ng-table.min.css" rel="stylesheet" >
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<h2><i class="glyphicon glyphicon-paperclip"></i>  QualityOne</h2>
+				<div ng-view></div>
+			</div>
+		</div>
+	</div>
+</body>
 </html>

@@ -1,0 +1,31 @@
+<form name="myForm" class="form-horizontal">
+  <div class="form-group" ng-class="{error: myForm.namespace.$invalid && !myForm.namespace.$pristine}">
+    <label class="col-md-2 control-label">namespace</label>
+	<div class="col-md-10">
+		<input type="text" name="namespace" ng-model="application.namespace" required>
+		<span ng-show="myForm.namespace.$error.required && !myForm.namespace.$pristine" class="help-inline">
+        Required {{myForm.namespace.$pristine}}</span>
+	</div>
+  </div>
+  
+  <div class="form-group" ng-class="{error: myForm.properties.$invalid && !myForm.properties.$pristine}">
+    <label class="col-md-2 control-label">properties</label>
+	<div class="col-md-10">
+		<input type="textarea" name="properties" ng-model="application.properties" required>
+		<input type="textarea" value="{{application.properties | json}}">
+		<span ng-show="myForm.properties.$error.required && !myForm.properties.$pristine" class="help-inline">
+        Required {{myForm.properties.$pristine}}</span>
+	</div>
+  </div>
+  
+  <div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+		<a href="#/" class="btn">Cancel</a>
+		<button ng-click="save()" ng-disabled="myForm.$invalid"
+			class="btn btn-primary">Save</button>
+		<button ng-click="destroy()"
+			ng-show="application.$remove" class="btn btn-danger">Delete</button>
+    </div>
+  </div>
+  
+</form>

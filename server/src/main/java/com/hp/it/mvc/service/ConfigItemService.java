@@ -20,18 +20,23 @@ import com.hp.it.server.context.ProjectContext;
 public class ConfigItemService implements IConfigItemService {
 
 	public ConfigItem getConfigItem(String coordinate) {
-		String coorArr[] = coordinate.split(":");
-		String groupId = coorArr[0];
-		String artificatId = coorArr[1];
-		String branch = null;
-		if (coorArr.length > 2) {
-			branch = coorArr[2];
+		String kee = null;
+		if(coordinate.contains("aggregate")){
+			kee = coordinate;
+		}else{
+			String coorArr[] = coordinate.split(":");
+			String groupId = coorArr[0];
+			String artificatId = coorArr[1];
+			String branch = null;
+			if (coorArr.length > 2) {
+				branch = coorArr[2];
+			}
+			kee = groupId + ":" + artificatId;
+			if (branch != null) {
+				kee += ":" + branch;
+			}
 		}
-
-		String kee = groupId + ":" + artificatId;
-		if (branch != null) {
-			kee += ":" + branch;
-		}
+		
 
 		File workspace = new File(System.getProperty("user.home")
 				+ File.separator + ".quality-one" + File.separator

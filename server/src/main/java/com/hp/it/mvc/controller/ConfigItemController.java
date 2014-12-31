@@ -23,7 +23,7 @@ public class ConfigItemController {
 	
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
-	public List<ConfigItem> getConfigItemList(ModelMap model) {
+	public List<ConfigItem> getConfigItemList() {
 		return configItemService.getConfigItemList();
 	}
 

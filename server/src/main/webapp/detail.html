@@ -2,7 +2,7 @@
   <div class="form-group" ng-class="{error: myForm.namespace.$invalid && !myForm.namespace.$pristine}">
     <label class="col-md-2 control-label">namespace</label>
 	<div class="col-md-10">
-		<input type="text" name="namespace" ng-model="application.namespace" required>
+		<input type="text" name="namespace" ng-model="application.namespace" class="form-control" required>
 		<span ng-show="myForm.namespace.$error.required && !myForm.namespace.$pristine" class="help-inline">
         Required {{myForm.namespace.$pristine}}</span>
 	</div>
@@ -11,8 +11,7 @@
   <div class="form-group" ng-class="{error: myForm.properties.$invalid && !myForm.properties.$pristine}">
     <label class="col-md-2 control-label">properties</label>
 	<div class="col-md-10">
-		<input type="textarea" name="properties" ng-model="application.properties" required>
-		<input type="textarea" value="{{application.properties | json}}">
+		<textarea json-text name="properties" ng-model="application.properties" class="form-control" style="min-height:250px;" required></textarea>
 		<span ng-show="myForm.properties.$error.required && !myForm.properties.$pristine" class="help-inline">
         Required {{myForm.properties.$pristine}}</span>
 	</div>

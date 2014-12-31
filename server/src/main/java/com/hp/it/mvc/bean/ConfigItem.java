@@ -2,7 +2,7 @@ package com.hp.it.mvc.bean;
 
 import java.util.Map;
 
-public class Project {
+public class ConfigItem {
 	
 	private String namespace;
 	
